@@ -1,0 +1,6 @@
+/Users/Gus/Projects/PromoCardsClipp/PromoCardsClipp/obj/Debug/.NETFramework,Version=v4.5.AssemblyAttribute.cs
+/Users/Gus/Projects/PromoCardsClipp/PromoCardsClipp/bin/Debug/nunit.framework.dll
+/Users/Gus/Projects/PromoCardsClipp/PromoCardsClipp/bin/Debug/PromoCardsClipp.dll.mdb
+/Users/Gus/Projects/PromoCardsClipp/PromoCardsClipp/bin/Debug/PromoCardsClipp.dll
+/Users/Gus/Projects/PromoCardsClipp/PromoCardsClipp/obj/Debug/PromoCardsClipp.dll
+/Users/Gus/Projects/PromoCardsClipp/PromoCardsClipp/obj/Debug/PromoCardsClipp.dll.mdb
