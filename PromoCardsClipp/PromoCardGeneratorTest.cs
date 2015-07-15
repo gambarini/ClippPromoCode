@@ -1,4 +1,5 @@
 ﻿using NUnit.Framework;
+using System.Collections.Generic;
 
 namespace PromoCardsClipp
 {
@@ -6,14 +7,26 @@ namespace PromoCardsClipp
 	public class PromoCardGeneratorTest
 	{
 		const string testKey1 = "QWERTY1234";
-		const string testKey2 = "P5@SA$7DFU8JH";
+		const string testKey2 = "P5@SA$7DFU8JHEX";
 		const int number = 100;
-		const string code = "WERYY1";
+		const string code = "VzFFMVIxWTFZMTEx";
+
+		private class PromoCardGeneratorMock : PromoCardGenerator {
+			public PromoCardGeneratorMock (string privateKey, int size) : base(privateKey, size)
+			{
+				
+			}
+
+			protected override int GetFlipFactor ()
+			{
+				return 1;
+			}
+		}
 
         [Test]	
 		public void NumberToCodeTest(){
 
-			var promoGen = new PromoCardGenerator (testKey1, 6);
+			var promoGen = new PromoCardGeneratorMock (testKey1, 6);
 
 			string codeGenerated = promoGen.GenerateCode (number);
 
@@ -23,7 +36,7 @@ namespace PromoCardsClipp
 		[Test]	
 		public void CodeToNumberTest(){
 
-			var promoGen = new PromoCardGenerator (testKey1, 6);
+			var promoGen = new PromoCardGeneratorMock (testKey1, 6);
 
 			int numberFromCode = promoGen.ExtractNumber (code);
 
@@ -35,13 +48,19 @@ namespace PromoCardsClipp
 
 			var promoGen = new PromoCardGenerator (testKey2, 6);
 
-			for (int i = 0; i <= 100000; i++){
+			var list = new List<string> ();
+
+			for (int i = 0; i < 10000; i++){
 				var code = promoGen.GenerateCode (i);
 				var number = promoGen.ExtractNumber (code);
-				System.Diagnostics.Debug.WriteLine (i + " - " + code);
-				Assert.AreEqual (i, number);
 
+				Assert.AreEqual (i, number);
+				Assert.IsFalse (list.Contains (code));
+
+				list.Add (code);
 			}
+
+			Assert.AreEqual (10000, list.Count);
 		}
 	}
 }

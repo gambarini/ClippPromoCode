@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Linq;
+using System.Text;
 
 namespace PromoCardsClipp
 {
 	public class PromoCardGenerator
 	{
 		private string _privateKey;
-
+		private Random random = new Random ();
 		private int _size;
 
 		public PromoCardGenerator (string privateKey, int size)
@@ -19,57 +20,83 @@ namespace PromoCardsClipp
 
 		}
 
+		private char[] GetNewKeyArray(){
+			char[] copyKey = new char[_privateKey.Length];
+			Array.Copy (_privateKey.ToArray(), copyKey, _privateKey.Length);
+
+			return copyKey;
+		}
+
+		protected virtual int GetFlipFactor(){
+			return random.Next (0, 9);
+		}
+
 		public int ExtractNumber (string code)
 		{
-			char[] flipedKey = FlipKey (_privateKey.ToArray());
+			byte[] bCode = Convert.FromBase64String (code);
 
-			char[] decrypted = code.ToArray ().Select (c => {
+			code = Encoding.UTF8.GetString (bCode);
 
-				int index = new string (flipedKey).IndexOf (c);
+			char[] flipedKey = GetNewKeyArray ();
 
-				flipedKey = FlipKey (flipedKey);
+			string decrypted = string.Empty;
 
-				return char.Parse(index.ToString());
-			}).ToArray();
+			for (int count = 0; count < code.Length; count += 2) {
+				char character = code [count];
+				int flipFactor = int.Parse(code [count + 1].ToString());
+
+				FlipKey(flipedKey, flipFactor);
+
+				int index = new string (flipedKey).IndexOf (character);
+			
+				decrypted += index;
+			}
 				
-			return int.Parse(new string(decrypted));
+			return int.Parse(decrypted);
 		}
 
 		public string GenerateCode (int number)
 		{
 			string data = number.ToString ().PadLeft (_size, '0');
-			char[] flipedKey = FlipKey (_privateKey.ToArray());
 
-			char[] encrypted = data.ToArray ().Select (c => {
+			char[] flipedKey = GetNewKeyArray ();
 
-				int i = int.Parse(c.ToString());
+			string encrypted = string.Empty;
 
-				char toCode = GetCharFromKey (i, flipedKey);
+			for(int index = 0; index < data.Length; index++){
 
-				flipedKey = FlipKey(flipedKey);
+				int character = int.Parse(data[index].ToString());
 
-				return toCode;
-					
-			}).ToArray();
+				int flipFactor = GetFlipFactor ();
 
-			return new string (encrypted);
+				FlipKey(flipedKey, flipFactor);
+
+				char toCode = GetCharFromKey (character, flipedKey);
+
+				encrypted += toCode.ToString() + flipFactor;
+			}
+
+			byte[] bEncrypted = Encoding.UTF8.GetBytes(encrypted);
+
+			return Convert.ToBase64String (bEncrypted);
 		}
 
 		private char GetCharFromKey(int index, char[] flipedKey){
 			return flipedKey [index];
 		}
 
-		private char[] FlipKey(char[] toFlip){
-			char first = toFlip[0];
+		private void FlipKey(char[] toFlip, int iterate){
+			for (int i = 0; i < iterate; i++)
+				deslocateArray (toFlip);
+		}
 
-			char[] _flipedKey = new char[toFlip.Length];
+		private void deslocateArray(char[] array){
+			char first = array[0];
 
-			_flipedKey [toFlip.Length - 1] = first;
+			for (int i = 0; i < array.Length - 1; i++)
+				array [i] = array [i + 1];
 
-			for (int i = 0; i < toFlip.Length - 1; i++)
-				_flipedKey [i] = toFlip [i + 1];
-
-			return _flipedKey;
+			array [array.Length - 1] = first;
 		}
 	}
 }
