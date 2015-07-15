@@ -13,11 +13,24 @@ namespace PromoCardsClipp
 		public PromoCardGenerator (string privateKey, int size)
 		{
 			if (privateKey.Length < 10)
-				throw new Exception ("privateKey must have at least 10 characters");
+				throw new Exception ("privateKey must have at least 10 characters.");
+
+			ValidadeUniqueCharacters (privateKey);
 
 			_size = size;
 			_privateKey = privateKey;
 
+		}
+
+		private void ValidadeUniqueCharacters(string privateKey){
+			for (int count = 0; count < privateKey.Length; count++) {
+				char ch = privateKey [count];
+				int total = privateKey.ToArray ().Count (c => c == ch);
+
+				if (total > 1) throw new Exception ("Characters in privateKey must be unique.");;
+			}
+
+			return;
 		}
 
 		private char[] GetNewKeyArray(){

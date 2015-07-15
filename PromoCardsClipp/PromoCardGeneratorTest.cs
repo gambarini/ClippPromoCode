@@ -23,6 +23,22 @@ namespace PromoCardsClipp
 			}
 		}
 
+		[Test]	
+		[ExpectedException(typeof(System.Exception), ExpectedMessage = "privateKey must have at least 10 characters.")]
+		public void MinimunCharactersError(){
+
+			var promoGen = new PromoCardGeneratorMock ("A", 6);
+
+		}
+
+		[Test]	
+		[ExpectedException(typeof(System.Exception), ExpectedMessage = "Characters in privateKey must be unique.")]
+		public void UniqueCharactersError(){
+
+			var promoGen = new PromoCardGeneratorMock ("ABCDEFGHIJKLMNOA", 6);
+
+		}
+
         [Test]	
 		public void NumberToCodeTest(){
 
