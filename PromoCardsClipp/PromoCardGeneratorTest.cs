@@ -60,7 +60,7 @@ namespace PromoCardsClipp
 		}
 
 		[Test]
-		public void RangeTest(){
+		public void RangeUniqueTest(){
 
 			var promoGen = new PromoCardGenerator (testKey2, 6);
 
@@ -77,6 +77,19 @@ namespace PromoCardsClipp
 			}
 
 			Assert.AreEqual (10000, list.Count);
+		}
+
+		[Test]
+		public void RangeTest(){
+
+			var promoGen = new PromoCardGenerator (testKey2, 6);
+
+			for (int i = 0; i < 100000; i++){
+				var code = promoGen.GenerateCode (i);
+				var number = promoGen.ExtractNumber (code);
+
+				Assert.AreEqual (i, number);
+			}
 		}
 	}
 }
